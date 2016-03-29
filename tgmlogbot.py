@@ -231,7 +231,7 @@ def handle_message(msg):
 	pass
 
 
-bot = telepot.Bot('<<token>>')
+bot = telepot.Bot('token')
 
 bot.notifyOnMessage(handle_message)
 
