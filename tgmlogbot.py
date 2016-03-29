@@ -23,24 +23,24 @@ import threading
 mtx = threading.Lock()
 
 def read_file(filename):
-	fp = file(filename)
-	data = fp.read()
-	fp.close()
-	return data
+    fp = file(filename)
+    data = fp.read()
+    fp.close()
+    return data
 
 def write_file(filename, data):
-	mtx.acquire()
-	fp = file(filename, 'w')
-	fp.write(data)
-	fp.close()
-	mtx.release()
+    mtx.acquire()
+    fp = file(filename, 'w')
+    fp.write(data)
+    fp.close()
+    mtx.release()
 
 
-LOGDIR			= 'log/'
-LOG_CACHE_FILE		= 'log/cache.txt'
-LOG_FILENAME_CACHE	= eval(read_file(LOG_CACHE_FILE))
+LOGDIR            = 'log/'
+LOG_CACHE_FILE        = 'log/cache.txt'
+LOG_FILENAME_CACHE    = eval(read_file(LOG_CACHE_FILE))
 
-BOTPREFIX	= '/'
+BOTPREFIX    = '/'
 
 
 ###### Commands [ ######
@@ -75,11 +75,11 @@ def comm_roll(chat, user, command):
 def comm_test(chat, user, command):
         #bot.sendMessage(chat['id'], 'Passed')
 
-	(year, month, day, hour, minute, second, weekday, yearday, daylightsavings) = time.localtime()
+    (year, month, day, hour, minute, second, weekday, yearday, daylightsavings) = time.localtime()
 
-	str_time = str(year)+'-'+str(month)+'-'+str(day)+' '+str(hour)+':'+str(minute)+':'+str(second)
+    str_time = str(year)+'-'+str(month)+'-'+str(day)+' '+str(hour)+':'+str(minute)+':'+str(second)
 
-	bot.sendMessage(chat['id'], 'USER: '+user['first_name']+' '+user['last_name']+' SEND MESSAGE: '+command+' IN CHAT: '+chat['title']+' AT LOCAL TIME: '+str_time)
+    bot.sendMessage(chat['id'], 'USER: '+user['first_name']+' '+user['last_name']+' SEND MESSAGE: '+command+' IN CHAT: '+chat['title']+' AT LOCAL TIME: '+str_time)
 
         pass
 ###### ] Commands ######
@@ -87,8 +87,8 @@ def comm_test(chat, user, command):
 
 ###### Logging [ ######
 def log_write_header(fp, chat_name, (year, month, day, hour, minute, second)):
-	str_time = str(year)+'-'+str(month)+'-'+str(day)+' '+str(hour)+':'+str(minute)+':'+str(second)
-	fp.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dt">
+    str_time = str(year)+'-'+str(month)+'-'+str(day)+' '+str(hour)+':'+str(minute)+':'+str(second)
+    fp.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dt">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -117,118 +117,132 @@ p.logline {margin:0pt 0pt 2pt 0pt;border-style:solid;border-width:1pt;border-col
 </div>
 <div class="content">
 """ % (' - '.join([chat_name, str_time]), chat_name, chat_name, str_time))
-	pass
+    pass
+
 
 def log_write_footer(fp):
-	fp.write("""</div>
+    fp.write("""</div>
 </div>
 </body>
 </html>
 """)
-	pass
+    pass
+
 
 def log_get_fp(chat_name, (year, month, day, hour, minute, second)):
-	str_year = str(year)
-	str_month = str(month)
-	str_day = str(day)
-	
-	filename = '.'.join(['/'.join([LOGDIR, chat_name, str_year, str_month, str_day]), 'html'])
-	alt_filename = '.'.join(['/'.join([LOGDIR, chat_name, str_year, str_month, str_day]), '_alt.html'])
-	if not os.path.exists('/'.join([LOGDIR, chat_name, str_year, str_month])):
-		os.makedirs('/'.join([LOGDIR, chat_name, str_year, str_month]))
-	
-	if LOG_FILENAME_CACHE.has_key(chat_name):
-		if LOG_FILENAME_CACHE[chat_name] != filename:
-			fp_old = file(LOG_FILENAME_CACHE[chat_name], 'a')
-			log_write_footer(fp_old)
-			fp_old.close()
-		if os.path.exists(filename):
-			fp = file(filename, 'a')
-			return fp
-		else:
-			LOG_FILENAME_CACHE[chat_name] = filename
-			write_file(LOG_CACHE_FILE, str(LOG_FILENAME_CACHE))
-			fp = file(filename, 'w')
-			log_write_header(fp, chat_name, (year, month, day, hour, minute, second))
-			return fp
-	else:
-		if os.path.exists(filename):
-			LOG_FILENAME_CACHE[chat_name] = filename
-			write_file(LOG_CACHE_FILE, str(LOG_FILENAME_CACHE))
-			fp = file(alt_filename, 'a')
-			return fp
-		else:
-			LOG_FILENAME_CACHE[chat_name] = filename
-			fp = file(filename, 'w')
-			log_write_header(fp, chat_name, (year, month, day, hour, minute, second))
-			return fp
-	pass
+    str_year = str(year)
+    str_month = str(month)
+    str_day = str(day)
+    
+    filename = '.'.join(['/'.join([LOGDIR, chat_name, str_year, str_month, str_day]), 'html'])
+    alt_filename = '.'.join(['/'.join([LOGDIR, chat_name, str_year, str_month, str_day]), '_alt.html'])
+    if not os.path.exists('/'.join([LOGDIR, chat_name, str_year, str_month])):
+        os.makedirs('/'.join([LOGDIR, chat_name, str_year, str_month]))
+    
+    if LOG_FILENAME_CACHE.has_key(chat_name):
+        if LOG_FILENAME_CACHE[chat_name] != filename:
+            fp_old = file(LOG_FILENAME_CACHE[chat_name], 'a')
+            log_write_footer(fp_old)
+            fp_old.close()
+        if os.path.exists(filename):
+            fp = file(filename, 'a')
+            return fp
+        else:
+            LOG_FILENAME_CACHE[chat_name] = filename
+            write_file(LOG_CACHE_FILE, str(LOG_FILENAME_CACHE))
+            fp = file(filename, 'w')
+            log_write_header(fp, chat_name, (year, month, day, hour, minute, second))
+            return fp
+    else:
+        if os.path.exists(filename):
+            LOG_FILENAME_CACHE[chat_name] = filename
+            write_file(LOG_CACHE_FILE, str(LOG_FILENAME_CACHE))
+            fp = file(alt_filename, 'a')
+            return fp
+        else:
+            LOG_FILENAME_CACHE[chat_name] = filename
+            fp = file(filename, 'w')
+            log_write_header(fp, chat_name, (year, month, day, hour, minute, second))
+            return fp
+    pass
+
 
 def log_regex_url(matchobj):
-	return '<a href="' + matchobj.group(0) + '">' + matchobj.group(0) + '</a>'
-	pass
+    return '<a href="' + matchobj.group(0) + '">' + matchobj.group(0) + '</a>'
+    pass
+
 
 def log(chat, user, text):
-	if not text: return
+    if not text:
+        return
 
-	chat_title      = ''
-        username        = ''
-        first_name      = ''
-        last_name       = ''
+    chat_title = ''
+        username = ''
+        first_name = ''
+        last_name = ''
 
-	try:
-		chat_title      = chat['title']
-        	username        = user['username']
-        	first_name      = user['first_name']
-        	last_name       = user['last_name']
-	except:
-		pass
+    try:
+        chat_title = chat['title']
+            username = user['username']
+            first_name = user['first_name']
+            last_name = user['last_name']
+    except:
+        pass
 
-	chat_name = chat_title
-	user_name = '@'+username+' ('+first_name+' '+last_name+')'
-	
-	decimal = str(int(math.modf(time.time())[0]*100000))
-	(year, month, day, hour, minute, second, weekday, yearday, daylightsavings) = time.localtime()
-	
-	text = text.replace('&', '&amp;').replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
-	text = re.sub('(http|ftp)(\:\/\/[^\s<]+)', log_regex_url, text)
-	text = text.replace('\n', '<br/>')
-	text = text.encode('utf-8');
-	user_name = user_name.encode('utf-8');
-	
-	timestamp = '[%.2i:%.2i:%.2i]' % (hour, minute, second)
-	
-	fp = log_get_fp(chat_name, (year, month, day, hour, minute, second))
-	fp.write('<p class="logline">')
-	fp.write('<span class="tstamp"><a id="t' + timestamp[1:-1] + '.' + decimal + '" href="#t' + timestamp[1:-1] + '.' + decimal + '">' + timestamp + '</a></span>')
-	fp.write('<span class="name">&lt;%s&gt;</span><span class="text">%s</span>\n' % (user_name, text))
-	fp.write('</p>')
-	fp.close()
+    chat_name = chat_title
+    user_name = '@'+username+' ('+first_name+' '+last_name+')'
+    
+    decimal = str(int(math.modf(time.time())[0]*100000))
+    (year, month, day, hour, minute, second, weekday, yearday, daylightsavings) = time.localtime()
+    
+    text = text.replace('&', '&amp;').replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
+    text = re.sub('(http|ftp)(\:\/\/[^\s<]+)', log_regex_url, text)
+    text = text.replace('\n', '<br/>')
+    text = text.encode('utf-8')
+    user_name = user_name.encode('utf-8')
+    
+    timestamp = '[%.2i:%.2i:%.2i]' % (hour, minute, second)
+    
+    fp = log_get_fp(chat_name, (year, month, day, hour, minute, second))
+    fp.write('<p class="logline">')
+    fp.write('<span class="tstamp"><a id="t' + timestamp[1:-1] + '.' + decimal + '" href="#t' + timestamp[1:-1] + '.' + decimal + '">' + timestamp + '</a></span>')
+    fp.write('<span class="name">&lt;%s&gt;</span><span class="text">%s</span>\n' % (user_name, text))
+    fp.write('</p>')
+    fp.close()
 
-	pass
+    pass
 ###### ] Logging ######
 
+
 def handle_message(msg):
-	chat	= msg['chat']
-	user	= msg['from']
-	text	= msg['text']
+    chat = msg['chat']
+    user = msg['from']
+    text = msg['text']
 
-	if text[0] == BOTPREFIX:
-		command = text
-	
-		print 'Got command: %s' % command
+    if text[0] == BOTPREFIX:
+        command = text
+    
+        print 'Got command: %s' % command
 
-		if	command == '/help':	comm_help(chat, user, command)
-		elif	command == '/say':	comm_say(chat, user, command)
-		elif	command == '/time':	comm_time(chat, user, command)
-		elif	command == '/date':	comm_date(chat, user, command)
-		elif	command == '/google':	comm_google(chat, user, command)
-		elif	command == '/bash':	comm_bash(chat, user, command)
-		elif	command == '/roll':	comm_roll(chat, user, command)
-		elif	command == '/test':	comm_test(chat, user, command)
-	
-	log(chat, user, text)
-	pass
+        if command == '/help':
+            comm_help(chat, user, command)
+        elif command == '/say':
+            comm_say(chat, user, command)
+        elif command == '/time':
+            comm_time(chat, user, command)
+        elif command == '/date':
+            comm_date(chat, user, command)
+        elif command == '/google':
+            comm_google(chat, user, command)
+        elif command == '/bash':
+            comm_bash(chat, user, command)
+        elif command == '/roll':
+            comm_roll(chat, user, command)
+        elif command == '/test':
+            comm_test(chat, user, command)
+    
+    log(chat, user, text)
+    pass
 
 
 bot = telepot.Bot('token')
@@ -238,4 +252,4 @@ bot.notifyOnMessage(handle_message)
 print 'I am listening ...'
 
 while 1:
-	time.sleep(10)
+    time.sleep(10)
