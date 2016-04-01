@@ -83,6 +83,6 @@ for plugin_file in plugins_file_list:
 bot = telepot.Bot('token')
 bot.notifyOnMessage(message)
 
-print 'Bot started. Listening ...'
+print '\nBot started. Listening ...'
 while True:
     time.sleep(10)

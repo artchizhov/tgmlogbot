@@ -69,7 +69,7 @@ def web_logger(data):
     text = text.replace('&', '&amp;').replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
     text = text.replace('\n', '<br />')
 
-    full_name = ('@'+username+' ['+first_name+' '+last_name+']').encode('utf-8')
+    full_name = '@%s [%s %s]' % (username, first_name, last_name)
     tstamp = '%.2i:%.2i:%.2i' % ltime
 
     logline = '<p class="logline">'
